@@ -27,8 +27,8 @@ public class ProdutoServico {
         return pr.findAll();
     }
 
-    // --> metodo responsavel para cadastrar produtos
-    public ResponseEntity<?> cadastrar(ProdutoModelo pm) {
+    // --> metodo responsavel para cadastrar ou alterar produtos
+    public ResponseEntity<?> cadastrarAlterar(ProdutoModelo pm ,  String acao) { //esse parametro diz que o metodo ta returnando httpStatus.created ou ok
         if (pm.getNome().equals("")) {
             rm.setMensagem("O nome do produto é obrigatorio");
             return new ResponseEntity<RespostaModelo>(rm, HttpStatus.BAD_REQUEST);
@@ -37,9 +37,22 @@ public class ProdutoServico {
             rm.setMensagem("O nome da marca é obrigatorio");
             return new ResponseEntity<RespostaModelo>(rm, HttpStatus.BAD_GATEWAY);
         }else{
-            return new ResponseEntity<ProdutoModelo>(pr.save(pm), HttpStatus.CREATED);
+            if(acao.equals("cadastrar")){
+                return new ResponseEntity<ProdutoModelo>(pr.save(pm), HttpStatus.CREATED);
+            }else{
+                return new ResponseEntity<ProdutoModelo>(pr.save(pm), HttpStatus.OK);
+                
+            }
         }
 
+    }
+
+    //--> metodo para remover produtos
+
+    public ResponseEntity<RespostaModelo> remover(Long codigo){
+        pr.deleteById(codigo);
+        rm.setMensagem("O produto foi removido com sucesso");
+        return new ResponseEntity<RespostaModelo>(rm, HttpStatus.OK);
     }
 
 }
